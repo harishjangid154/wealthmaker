@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealth Vault | Premium Fintech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0c;
+            --card-bg: #151518;
+            --accent-gold: #d4af37;
+            --accent-blue: #3b82f6;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(21, 21, 24, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+        }
+
+        .premium-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+
+        .tab-active {
+            color: var(--text-main);
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        /* Hide scrollbars */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        input, select {
+            background: #1e1e24 !important;
+            border: 1px solid #2d2d35 !important;
+            color: white !important;
+            border-radius: 12px !important;
+        }
+
+        .sip-streak-badge {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- App Header -->
+    <header class="p-6 flex justify-between items-center sticky top-0 z-40 bg-black/50 backdrop-blur-md">
+        <div>
+            <h1 class="text-xl font-bold tracking-tight text-blue-500">WEALTH<span class="text-white">VAULT</span></h1>
+            <p class="text-xs text-slate-400 font-medium tracking-widest uppercase">Elite Prototype</p>
+        </div>
+        <div class="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
+            <span class="text-sm font-bold">JD</span>
+        </div>
+    </header>
+
+    <!-- Main Navigation Content -->
+    <main id="app-content" class="px-5 space-y-6">
+        
+        <!-- Dashboard Section -->
+        <section id="section-dashboard" class="space-y-6">
+            <!-- Balance Card -->
+            <div class="premium-gradient p-6 rounded-[32px] space-y-4 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/10 blur-[50px] rounded-full"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-slate-400 text-sm font-medium">Available Balance</p>
+                        <h2 id="total-balance" class="text-4xl font-bold mt-1 tracking-tight">₹0.00</h2>
+                    </div>
+                    <div class="sip-streak-badge px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        🔥 <span id="streak-val">0</span> Day Streak
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Locked</p>
+                        <p id="locked-balance" class="text-lg font-semibold">₹0.00</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Active Loans</p>
+                        <p id="active-loans-count" class="text-lg font-semibold text-red-400">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Grid -->
+            <div class="grid grid-cols-4 gap-3">
+                <button onclick="openModal('addMoneyModal')" class="flex flex-col items-center gap-2">
+                    <div class="w-14 h-14 glass-card flex items-center justify-center text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400">Add</span>
+                </button>
+                <button onclick="openModal('createSipModal')" class="flex flex-col items-center gap-2">
+                    <div class="w-14 h-14 glass-card flex items-center justify-center text-emerald-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400">SIP</span>
+                </button>
+                <button onclick="openModal('takeLoanModal')" class="flex flex-col items-center gap-2">
+                    <div class="w-14 h-14 glass-card flex items-center justify-center text-amber-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400">Loan</span>
+                </button>
+                <button onclick="navigateTo('transactions')" class="flex flex-col items-center gap-2">
+                    <div class="w-14 h-14 glass-card flex items-center justify-center text-purple-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400">History</span>
+                </button>
+            </div>
+
+            <!-- SIP Highlights -->
+            <div id="active-sip-container" class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 px-1">Active SIPs</h3>
+                <div id="sip-list-empty" class="glass-card p-6 text-center">
+                    <p class="text-slate-500 text-sm italic">No active SIP commitments</p>
+                </div>
+                <div id="sip-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Loan Highlights -->
+            <div id="active-loan-container" class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 px-1">Active Loans</h3>
+                <div id="loan-list-empty" class="glass-card p-6 text-center">
+                    <p class="text-slate-500 text-sm italic">No active loans found</p>
+                </div>
+                <div id="loan-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Wealth Projection Widget -->
+            <div class="glass-card p-6 space-y-4">
+                <h3 class="font-bold text-lg">Wealth Projection</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs text-slate-400 mb-2 block">Monthly Investment (₹)</label>
+                        <input type="number" id="projection-amount" value="5000" oninput="calculateProjection()" class="w-full p-3 rounded-xl">
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-blue-900/20 p-3 rounded-2xl border border-blue-500/10">
+                            <p class="text-[10px] text-blue-400 font-bold uppercase">10 Yrs</p>
+                            <p id="proj-10" class="text-xs font-bold mt-1">₹0</p>
+                        </div>
+                        <div class="bg-purple-900/20 p-3 rounded-2xl border border-purple-500/10">
+                            <p class="text-[10px] text-purple-400 font-bold uppercase">15 Yrs</p>
+                            <p id="proj-15" class="text-xs font-bold mt-1">₹0</p>
+                        </div>
+                        <div class="bg-emerald-900/20 p-3 rounded-2xl border border-emerald-500/10">
+                            <p class="text-[10px] text-emerald-400 font-bold uppercase">20 Yrs</p>
+                            <p id="proj-20" class="text-xs font-bold mt-1">₹0</p>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-center text-slate-500 italic font-medium">Estimated @ 4% annual returns</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions Section -->
+        <section id="section-transactions" class="hidden space-y-6 animate-in fade-in duration-300">
+            <div class="flex items-center gap-4">
+                <button onclick="navigateTo('dashboard')" class="w-10 h-10 glass-card flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <h2 class="text-2xl font-bold">Transactions</h2>
+            </div>
+            
+            <div id="tx-list" class="space-y-2">
+                <!-- Transaction items will be injected here -->
+            </div>
+            <div id="tx-empty" class="text-center py-20 hidden">
+                <p class="text-slate-500">No transactions recorded yet</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-card mx-6 my-4 p-2 flex justify-around items-center z-50 border-t border-white/10">
+        <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center p-2 tab-active transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            <span class="text-[10px] mt-1 font-bold">VAULT</span>
+        </button>
+        <button onclick="navigateTo('transactions')" id="nav-transactions" class="flex flex-col items-center p-2 text-slate-500 hover:text-white transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span class="text-[10px] mt-1 font-bold">HISTORY</span>
+        </button>
+    </nav>
+
+    <!-- Modals -->
+    
+    <!-- Add Money Modal -->
+    <div id="addMoneyModal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal('addMoneyModal')"></div>
+        <div class="glass-card w-full max-w-md p-8 relative space-y-6 animate-in slide-in-from-bottom duration-300">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold">Add Money</h3>
+                <button onclick="closeModal('addMoneyModal')" class="text-slate-400">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 mb-2 block uppercase tracking-widest font-bold">Amount (₹)</label>
+                    <input type="number" id="add-money-val" placeholder="0.00" class="w-full text-2xl font-bold p-4 bg-slate-900 border-slate-800 rounded-2xl focus:ring-2 ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setAmount('add-money-val', 5000)" class="bg-slate-800 p-2 rounded-xl text-xs">+5k</button>
+                    <button onclick="setAmount('add-money-val', 10000)" class="bg-slate-800 p-2 rounded-xl text-xs">+10k</button>
+                    <button onclick="setAmount('add-money-val', 50000)" class="bg-slate-800 p-2 rounded-xl text-xs">+50k</button>
+                </div>
+                <button onclick="processAddMoney()" class="w-full btn-primary p-4 rounded-2xl font-bold text-lg">Confirm Deposit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create SIP Modal -->
+    <div id="createSipModal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal('createSipModal')"></div>
+        <div class="glass-card w-full max-w-md p-8 relative space-y-6 animate-in slide-in-from-bottom duration-300">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold">Start Auto SIP</h3>
+                <button onclick="closeModal('createSipModal')" class="text-slate-400">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 mb-2 block uppercase tracking-widest font-bold">Monthly Commitment (₹)</label>
+                    <input type="number" id="sip-amount-val" placeholder="1000" class="w-full p-4 bg-slate-900 border-slate-800 rounded-2xl">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-2 block uppercase tracking-widest font-bold">Frequency</label>
+                    <select id="sip-freq-val" class="w-full p-4 bg-slate-900 border-slate-800 rounded-2xl appearance-none">
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly" selected>Monthly</option>
+                    </select>
+                </div>
+                <button onclick="processCreateSip()" class="w-full bg-emerald-600 p-4 rounded-2xl font-bold text-lg">Active SIP Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Take Loan Modal -->
+    <div id="takeLoanModal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal('takeLoanModal')"></div>
+        <div class="glass-card w-full max-w-md p-8 relative animate-in slide-in-from-bottom duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">Self-Liquidating Loan</h3>
+                <button onclick="closeModal('takeLoanModal')" class="text-slate-400">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl mb-4">
+                    <p class="text-[10px] text-amber-500 font-bold uppercase">Borrowing Power</p>
+                    <p class="text-xs text-slate-300">You can borrow up to 80% of your vault balance instantly.</p>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-2 block uppercase font-bold">Loan Amount (₹)</label>
+                    <input type="number" id="loan-amount-val" oninput="calculateEmi()" placeholder="0" class="w-full p-4 bg-slate-900 border-slate-800 rounded-2xl">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 mb-2 block uppercase font-bold">Tenure (Months)</label>
+                        <select id="loan-tenure-val" onchange="calculateEmi()" class="w-full p-4 bg-slate-900 border-slate-800 rounded-2xl">
+                            <option value="6">6 Months</option>
+                            <option value="12" selected>12 Months</option>
+                            <option value="24">24 Months</option>
+                            <option value="36">36 Months</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 mb-2 block uppercase font-bold">Rate (%)</label>
+                        <input type="number" id="loan-rate-val" value="10.5" disabled class="w-full p-4 bg-slate-900 border-slate-800 rounded-2xl opacity-50">
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Estimated EMI</p>
+                        <p id="estimated-emi" class="text-xl font-bold text-white">₹0.00</p>
+                    </div>
+                    <button onclick="processLoan()" class="bg-amber-600 px-6 py-3 rounded-xl font-bold">Avail Loan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification system -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] hidden">
+        <div class="bg-white text-black px-6 py-3 rounded-full font-bold shadow-2xl text-sm whitespace-nowrap animate-in slide-in-from-top">
+            <span id="toast-msg"></span>
+        </div>
+    </div>
+
+    <script>
+        // --- Core Data & State Management ---
+        const INITIAL_STATE = {
+            vaultAccount: { balance: 0, locked: 0, streak: 0 },
+            sipCommitments: [],
+            loans: [],
+            transactions: []
+        };
+
+        let state = JSON.parse(localStorage.getItem('wealth_vault_data')) || INITIAL_STATE;
+
+        function saveState() {
+            localStorage.setItem('wealth_vault_data', JSON.stringify(state));
+            renderAll();
+        }
+
+        // --- UI Utilities ---
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        function navigateTo(section) {
+            document.getElementById('section-dashboard').classList.add('hidden');
+            document.getElementById('section-transactions').classList.add('hidden');
+            document.getElementById(`section-${section}`).classList.remove('hidden');
+
+            document.getElementById('nav-dashboard').classList.remove('tab-active');
+            document.getElementById('nav-transactions').classList.remove('tab-active');
+            document.getElementById(`nav-${section}`).classList.add('tab-active');
+            
+            if(section === 'transactions') renderTransactions();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function setAmount(id, val) {
+            const current = parseFloat(document.getElementById(id).value) || 0;
+            document.getElementById(id).value = current + val;
+        }
+
+        // --- Core Features Logic ---
+
+        function processAddMoney() {
+            const amount = parseFloat(document.getElementById('add-money-val').value);
+            if (!amount || amount <= 0) return;
+
+            state.vaultAccount.balance += amount;
+            state.vaultAccount.streak += 1; // Prototype logic: increases streak on deposit
+            
+            state.transactions.unshift({
+                id: Date.now(),
+                type: 'Deposit',
+                amount: amount,
+                date: new Date().toLocaleDateString(),
+                category: 'Vault Inflow'
+            });
+
+            document.getElementById('add-money-val').value = '';
+            closeModal('addMoneyModal');
+            saveState();
+            showToast(`Added ${formatCurrency(amount)} successfully!`);
+        }
+
+        function processCreateSip() {
+            const amount = parseFloat(document.getElementById('sip-amount-val').value);
+            const freq = document.getElementById('sip-freq-val').value;
+
+            if (!amount || amount <= 0) return;
+
+            const newSip = {
+                id: Date.now(),
+                amount: amount,
+                frequency: freq,
+                streak: 1,
+                nextDueDate: new Date(Date.now() + 86400000 * 30).toLocaleDateString()
+            };
+
+            state.sipCommitments.push(newSip);
+            closeModal('createSipModal');
+            saveState();
+            showToast(`${freq} SIP of ${formatCurrency(amount)} activated!`);
+        }
+
+        function calculateEmi() {
+            const principal = parseFloat(document.getElementById('loan-amount-val').value) || 0;
+            const months = parseInt(document.getElementById('loan-tenure-val').value);
+            const ratePerAnnum = 10.5;
+            
+            if(principal <= 0) {
+                document.getElementById('estimated-emi').innerText = `₹0.00`;
+                return;
+            }
+
+            const monthlyRate = ratePerAnnum / 12 / 100;
+            const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            
+            document.getElementById('estimated-emi').innerText = formatCurrency(emi);
+            return emi;
+        }
+
+        function processLoan() {
+            const amount = parseFloat(document.getElementById('loan-amount-val').value);
+            const months = parseInt(document.getElementById('loan-tenure-val').value);
+            const emi = calculateEmi();
+
+            if (!amount || amount <= 0) return;
+            if (amount > state.vaultAccount.balance * 0.8) {
+                showToast("Loan limit exceeded (80% of vault)");
+                return;
+            }
+
+            // Loan Logic
+            state.vaultAccount.balance -= amount;
+            state.vaultAccount.locked += amount * 0.5; // Simulated collateral lock
+            
+            state.loans.push({
+                id: Date.now(),
+                principal: amount,
+                emi: emi,
+                tenure: months,
+                remaining: months,
+                status: 'Active'
+            });
+
+            state.transactions.unshift({
+                id: Date.now(),
+                type: 'Loan Disbursal',
+                amount: amount,
+                date: new Date().toLocaleDateString(),
+                category: 'Vault Debt'
+            });
+
+            closeModal('takeLoanModal');
+            saveState();
+            showToast("Loan disbursed instantly!");
+        }
+
+        function calculateProjection() {
+            const monthly = parseFloat(document.getElementById('projection-amount').value) || 0;
+            const r = 0.04 / 12; // 4% annual
+
+            const formula = (p, n) => p * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+
+            document.getElementById('proj-10').innerText = formatCurrency(formula(monthly, 10 * 12));
+            document.getElementById('proj-15').innerText = formatCurrency(formula(monthly, 15 * 12));
+            document.getElementById('proj-20').innerText = formatCurrency(formula(monthly, 20 * 12));
+        }
+
+        // --- Rendering Logic ---
+
+        function renderAll() {
+            // Stats
+            document.getElementById('total-balance').innerText = formatCurrency(state.vaultAccount.balance);
+            document.getElementById('locked-balance').innerText = formatCurrency(state.vaultAccount.locked);
+            document.getElementById('streak-val').innerText = state.vaultAccount.streak;
+            document.getElementById('active-loans-count').innerText = state.loans.length;
+
+            // SIP List
+            const sipList = document.getElementById('sip-list');
+            const sipEmpty = document.getElementById('sip-list-empty');
+            sipList.innerHTML = '';
+            
+            if(state.sipCommitments.length > 0) {
+                sipEmpty.classList.add('hidden');
+                state.sipCommitments.forEach(sip => {
+                    const el = document.createElement('div');
+                    el.className = 'glass-card p-4 flex justify-between items-center border-l-4 border-emerald-500';
+                    el.innerHTML = `
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">${sip.frequency} Wealth Builder</p>
+                            <p class="text-lg font-bold">${formatCurrency(sip.amount)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Next Due</p>
+                            <p class="text-xs font-medium">${sip.nextDueDate}</p>
+                        </div>
+                    `;
+                    sipList.appendChild(el);
+                });
+            } else {
+                sipEmpty.classList.remove('hidden');
+            }
+
+            // Loan List
+            const loanList = document.getElementById('loan-list');
+            const loanEmpty = document.getElementById('loan-list-empty');
+            loanList.innerHTML = '';
+
+            if(state.loans.length > 0) {
+                loanEmpty.classList.add('hidden');
+                state.loans.forEach(loan => {
+                    const el = document.createElement('div');
+                    el.className = 'glass-card p-4 space-y-3 border-l-4 border-amber-500';
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Self Loan</p>
+                                <p class="text-lg font-bold">${formatCurrency(loan.principal)}</p>
+                            </div>
+                            <span class="bg-amber-900/40 text-amber-500 text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">${loan.status}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-500 border-t border-white/5 pt-2">
+                            <span>EMI: <b>${formatCurrency(loan.emi)}</b></span>
+                            <span><b>${loan.remaining}</b> months left</span>
+                        </div>
+                    `;
+                    loanList.appendChild(el);
+                });
+            } else {
+                loanEmpty.classList.remove('hidden');
+            }
+
+            calculateProjection();
+        }
+
+        function renderTransactions() {
+            const list = document.getElementById('tx-list');
+            const empty = document.getElementById('tx-empty');
+            list.innerHTML = '';
+
+            if(state.transactions.length === 0) {
+                empty.classList.remove('hidden');
+            } else {
+                empty.classList.add('hidden');
+                state.transactions.forEach(tx => {
+                    const isCredit = tx.type === 'Deposit';
+                    const el = document.createElement('div');
+                    el.className = 'glass-card p-4 flex justify-between items-center';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center ${isCredit ? 'text-emerald-400' : 'text-red-400'}">
+                                ${isCredit ? '↓' : '↑'}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">${tx.type}</p>
+                                <p class="text-[10px] text-slate-500">${tx.date} • ${tx.category}</p>
+                            </div>
+                        </div>
+                        <p class="font-bold ${isCredit ? 'text-emerald-400' : 'text-white'}">
+                            ${isCredit ? '+' : '-'}${formatCurrency(tx.amount)}
+                        </p>
+                    `;
+                    list.appendChild(el);
+                });
+            }
+        }
+
+        // Initialize
+        window.onload = renderAll;
+    </script>
+</body>
+</html>
